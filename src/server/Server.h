@@ -2,7 +2,9 @@
 #ifndef TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_SERVER_H
 #define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_SERVER_H
 
+#include <vector>
 #include "../lib/mongoose.h"
+#include "Controller.h"
 
 class Server {
 
@@ -11,12 +13,14 @@ public:
 
     void start();
 
-    void dispatchCall(mg_connection *pConnection, int i, void *pVoid);
+    void dispatchCall(struct mg_connection *c, int ev, void *p);
+
+    void registerController(Controller *controller);
 
 private:
     struct mg_mgr mgr;
     struct mg_connection *c;
-
+    std::vector<Controller *> controllers;
 };
 
 

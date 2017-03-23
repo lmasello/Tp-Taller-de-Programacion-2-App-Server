@@ -1,13 +1,13 @@
 
 #include <iostream>
+#include <algorithm>
 #include "Server.h"
 
 
 void http_event_handler(struct mg_connection *c, int ev, void *p) {
     //Only dispatch events when its an http request
     if (ev == MG_EV_HTTP_REQUEST) {
-        Server *server = (Server *) c->mgr->user_data;
-        server->dispatchCall(c, ev, p);
+        ((Server *) c->mgr->user_data)->dispatchCall(c, ev, p);
     }
 }
 
@@ -16,7 +16,10 @@ Server::Server(const char *port) {
     mg_mgr_init(&mgr, this);
     c = mg_bind(&mgr, port, http_event_handler);
     mg_set_protocol_http_websocket(c);
+}
 
+void Server::registerController(Controller *controller) {
+    controllers.push_back(controller);
 }
 
 void Server::start() {
@@ -25,11 +28,19 @@ void Server::start() {
     }
 }
 
-void Server::dispatchCall(struct mg_connection *c, int ev, void *p) {
-    struct http_message *hm = (struct http_message *) p;
-    // We have received an HTTP request. Parsed request is contained in `hm`.
-    // Send HTTP reply to the client which shows full original request.
-    mg_send_head(c, 201, hm->message.len, "Content-Type: text/plain");
-    mg_printf(c, "%.*s", hm->message.len, hm->message.p);
+
+
+void Server::dispatchCall(struct mg_connection *c, int ev, void *ev_data) {
+
+    struct http_message *hm = (struct http_message *) ev_data;
+
+    for(Controller *controller : this->controllers) {
+        if (controller->handles(&hm->method, &hm->uri)) {
+            std::cout << "Handles!";
+            controller->process(c, ev, ev_data);
+            return;
+        }
+    }
+    mg_http_send_error(c, 500, "No controller found");
 }
 
