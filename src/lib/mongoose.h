@@ -3616,7 +3616,7 @@ struct mg_connection *mg_connect(struct mg_mgr *mgr, const char *address,
  * }
  *
  *   ...
- *   mg_connect(mgr, "my_site.com:80", ev_handler);
+ *   mg_connect(mgr, "my_site.com:80", http_event_handler);
  * ```
  */
 struct mg_connection *mg_connect_opt(struct mg_mgr *mgr, const char *address,
@@ -3734,7 +3734,7 @@ enum v7_err mg_enable_javascript(struct mg_mgr *m, struct v7 *v7,
  *  mg_set_timer(c, mg_time() + 1.5);
  *  ...
  *
- *  void ev_handler(struct mg_connection *c, int ev, void *ev_data) {
+ *  void http_event_handler(struct mg_connection *c, int ev, void *ev_data) {
  *  switch (ev) {
  *    case MG_EV_CONNECT:
  *      mg_set_timer(c, 0);  // Clear connect timer
@@ -4439,7 +4439,7 @@ int mg_parse_http_basic_auth(struct mg_str *hdr, char *user, size_t user_len,
  * Usage example:
  *
  * ```c
- *    static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
+ *    static void http_event_handler(struct mg_connection *nc, int ev, void *ev_data) {
  *      switch(ev) {
  *        case MG_EV_HTTP_REQUEST: {
  *          struct http_message *hm = (struct http_message *) ev_data;
@@ -4645,7 +4645,7 @@ struct mg_serve_http_opts {
  * Example code snippet:
  *
  * ```c
- * static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
+ * static void http_event_handler(struct mg_connection *nc, int ev, void *ev_data) {
  *   struct http_message *hm = (struct http_message *) ev_data;
  *   struct mg_serve_http_opts opts = { .document_root = "/var/www" };  // C99
  *
@@ -4668,7 +4668,7 @@ void mg_serve_http(struct mg_connection *nc, struct http_message *hm,
  * Example code snippet:
  *
  * ```c
- * static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
+ * static void http_event_handler(struct mg_connection *nc, int ev, void *ev_data) {
  *   switch (ev) {
  *     case MG_EV_HTTP_REQUEST: {
  *       struct http_message *hm = (struct http_message *) ev_data;
@@ -4711,7 +4711,7 @@ typedef struct mg_str (*mg_fu_fname_fn)(struct mg_connection *nc,
  *   // fname is user-controlled and needs to be sanitized.
  *   return fname;
  * }
- * void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
+ * void http_event_handler(struct mg_connection *nc, int ev, void *ev_data) {
  *   switch (ev) {
  *     ...
  *     case MG_EV_HTTP_PART_BEGIN:
