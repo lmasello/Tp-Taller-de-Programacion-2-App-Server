@@ -21,6 +21,8 @@ private:
     struct mg_mgr mgr;
     struct mg_connection *c;
     std::vector<Controller *> controllers;
+
+    void sendNotFoundResponse(mg_connection *pConnection);
 };
 
 
