@@ -68,7 +68,6 @@ void Server::dispatchCall(struct mg_connection *c, int ev, void *ev_data) {
 
     for(Controller *controller : this->controllers) {
         if (controller->handles(&hm->method, &hm->uri)) {
-            std::cout << "Handles!";
             controller->process(c, ev, ev_data);
             return;
         }
