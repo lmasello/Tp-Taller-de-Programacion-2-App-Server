@@ -18,6 +18,9 @@ set(SOURCE_FILES
         src/MongoController.cpp
         src/MongoController.h)
 
+SET(CPACK_GENERATOR "DEB")
+SET(CPACK_PACKAGE_CONTACT 'Macri gato')
+
 #Adding mongo dependency
 find_package(PkgConfig REQUIRED)
 pkg_search_module(MONGOCXX REQUIRED libmongocxx)
@@ -27,3 +30,5 @@ link_directories(${MONGOCXX_LIBRARY_DIRS})
 add_executable(Tp_Taller_de_Programacion_2_App_Server ${SOURCE_FILES})
 
 target_link_libraries(Tp_Taller_de_Programacion_2_App_Server ${MONGOCXX_LIBRARIES})
+
+INCLUDE(CPack)
