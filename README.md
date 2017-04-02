@@ -3,29 +3,39 @@ Repository of the semestral project for the subject 'Taller de Programación II'
 
 ## Build
 
-The steps to build the project are:
-
-* Clone the repository:
-
-```bash
-git clone git@github.com:lmasello/Tp-Taller-de-Programacion-2-App-Server.git
-```
-This step should create a new directory called **Tp-Taller-de-Programacion-2-App-Server**
-
-* make
+### Build executable
 
 ```bash
 cd Tp-Taller-de-Programacion-2-App-Server
-cmake ./
+cmake .
 make
 ```
 
-After this, a new executable file will be listed (Tp_Taller_de_Programacion_2_App_Server).
+### Build .deb package
 
-* run
+```bash
+cd Tp-Taller-de-Programacion-2-App-Server
+cmake .
+make package
+```
 
-Just run it:
+### Build docker image
+
+```bash
+docker build . --tag music-io-app-server
+```
+
+## run
+
+### Executable:
 
 ```bash
 ./Tp_Taller_de_Programacion_2_App_Server
 ```
+
+### Docker:
+
+```bash
+docker run music-io-app-server:latest
+```
+
