@@ -39,7 +39,7 @@ void Logger::debug(const string data) {
 }
 
 void Logger::logLocking(const string data, LogLevel level) {
-	if (level <= level)
+	if (this->level <= level)
 		log(data, level);
 }
 
