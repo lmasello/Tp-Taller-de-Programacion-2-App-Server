@@ -17,7 +17,7 @@ public:
 	LockFile (const std::string name);
 	~LockFile();
 
-	ssize_t write(const void *buffer, const ssize_t size) const;
+	ssize_t write(const void *buffer, const ssize_t size);
 
 private:
 	int lock();

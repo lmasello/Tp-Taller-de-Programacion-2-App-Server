@@ -15,7 +15,6 @@
 #include <vector>
 
 #include "exceptions/SysCallException.h"
-#include "exceptions/SigIntException.h"
 
 using namespace std;
 

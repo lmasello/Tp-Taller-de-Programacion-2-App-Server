@@ -19,8 +19,8 @@ int LockFile::unlock() {
 	return fcntl(this->fd, F_SETLK, &(this->fl));
 }
 
-ssize_t LockFile::write(const void* buffer,const ssize_t size) const {
-	this->lock();
+ssize_t LockFile::write(const void* buffer,const ssize_t size) {
+	lock();
 	syscalls::lseek(this->fd, 0, SEEK_END);
 	ssize_t response = syscalls::write(this->fd, buffer,size);
 	this->unlock();

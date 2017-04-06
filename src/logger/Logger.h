@@ -5,7 +5,7 @@
 #include <map>
 #include <sstream>
 #include <list>
-#include "../syscalls/Sy	sCalls.h"
+#include "./syscalls/SysCalls.h"
 #include "./lockFile/LockFile.h"
 #include <unistd.h>
 #include <ctime>
@@ -16,6 +16,13 @@ static const std::string LOG_FILE = string("/tmp/music-io.log");
 
 using namespace std;
 
+template<typename T>
+static std::string convertToString(T t){
+	std::stringstream convert;
+	convert << t;
+	return std::string(convert.str());
+}
+
 static void replacer(string& data, string toReplace) {
 	data = data.replace(data.find_first_of("{}"), 2, toReplace);
 }
@@ -24,7 +31,7 @@ template<typename ... Args >
 std::string replace(string data, Args... args ){
     std::ostringstream stream;
     using List= int[];
-    (void)List{0, ( (void)(replacer(data, Helper::convertToString(args))), 0 ) ... };
+    (void)List{0, ( (void)(replacer(data, convertToString(args))), 0 ) ... };
 
     return data;
 }

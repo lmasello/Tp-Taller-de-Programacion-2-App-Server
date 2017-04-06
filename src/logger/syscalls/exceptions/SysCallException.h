@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdexcept>
 #include <string>
-#include "../../utils/Helper.h"
 
 using std::runtime_error;
 
@@ -16,7 +15,7 @@ public:
 	}
 
 	SysCallException(const std::string& msgError) :
-			runtime_error(msgError + ": " + Helper::convertToString(strerror(errno)) + " from pid: " + Helper::convertToString(getpid())) {
+			runtime_error("Unexpected error has occurred: " + msgError) {
 	}
 };
 

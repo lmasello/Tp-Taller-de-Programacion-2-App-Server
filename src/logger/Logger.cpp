@@ -2,17 +2,13 @@
 
 using namespace std;
 
-void Logger::setName(string otherName){
-	this->name = otherName;
-}
-
 Logger::Logger(string logName) : lockFile(LOG_FILE), name(logName) {
-	this->log_level = LogLevel::INFO;
+	this->level = LogLevel::INFO;
 	this->initializeEnumMapValues();
 }
 
-Logger::Logger(string logName, string file) : lockFile(file), name(logName) {
-	this->log_level = LogLevel::INFO;
+Logger::Logger(LogLevel level, string logName) : lockFile(LOG_FILE), name(logName) {
+	this->level = LogLevel::INFO;
 	this->initializeEnumMapValues();
 }
 
@@ -43,7 +39,7 @@ void Logger::debug(const string data) {
 }
 
 void Logger::logLocking(const string data, LogLevel level) {
-	if (log_level <= level)
+	if (level <= level)
 		log(data, level);
 }
 
