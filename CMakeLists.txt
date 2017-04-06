@@ -7,6 +7,12 @@ set(SOURCE_FILES
         src/main.cpp
         src/lib/mongoose.h
         src/lib/mongoose.c
+        src/logger/Logger.cpp
+        src/logger/Logger.h
+        src/logger/lockFile/LockFile.cpp
+        src/logger/lockFile/LockFile.h
+        src/logger/syscalls/SysCalls.h
+        src/logger/syscalls/exceptions/SysCallException.h
         src/server/Server.cpp
         src/server/Server.h
         src/server/Controller.cpp
