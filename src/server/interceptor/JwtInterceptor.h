@@ -3,7 +3,7 @@
 
 #include <string>
 #include "Interceptor.h"
-#include "../../lib/mongoose.h"
+#include "../../lib/moongose/mongoose.h"
 #include "../../logger/Logger.h"
 
 class JwtInterceptor : public Interceptor {

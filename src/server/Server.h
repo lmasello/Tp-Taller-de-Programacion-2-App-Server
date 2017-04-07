@@ -3,10 +3,14 @@
 #define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_SERVER_H
 
 #include <vector>
-#include "../lib/mongoose.h"
+#include "../lib/moongose/mongoose.h"
+#include "../lib/json/json.hpp"
 #include "controller/Controller.h"
 #include "interceptor/Interceptor.h"
 #include "interceptor/JwtInterceptor.h"
+
+using std::string;
+using json = nlohmann::json;
 
 class Server {
 
@@ -21,12 +25,14 @@ public:
     void registerInterceptor(Interceptor *interceptor);
 
 private:
+    Logger *LOG = new Logger("Jwt Interceptor");
+
     struct mg_mgr mgr;
     struct mg_connection *c;
     std::vector<Controller *> controllers;
     std::vector<Interceptor *> interceptors;
 
-    void sendNotFoundResponse(mg_connection *pConnection);
+    void sendNotFoundResponse(mg_connection *pConnection, http_message* hm);
 };
 
 
