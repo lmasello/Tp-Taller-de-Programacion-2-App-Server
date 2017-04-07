@@ -48,10 +48,17 @@ Server::Server(const char *port) {
     mg_mgr_init(&mgr, this);
     c = mg_bind(&mgr, port, http_event_handler);
     mg_set_protocol_http_websocket(c);
+
+    //Add interceptors
+    this->registerInterceptor(new JwtInterceptor());
 }
 
 void Server::registerController(Controller *controller) {
-    controllers.push_back(controller);
+    this->controllers.push_back(controller);
+}
+
+void Server::registerInterceptor(Interceptor *interceptor) {
+    this->interceptors.push_back(interceptor);
 }
 
 void Server::start() {
@@ -65,6 +72,10 @@ void Server::start() {
 void Server::dispatchCall(struct mg_connection *c, int ev, void *ev_data) {
 
     struct http_message *hm = (struct http_message *) ev_data;
+
+    for(Interceptor *interceptor : this->interceptors) {
+        interceptor->intercept(c, ev, ev_data);
+    }
 
     for(Controller *controller : this->controllers) {
         if (controller->handles(&hm->method, &hm->uri)) {

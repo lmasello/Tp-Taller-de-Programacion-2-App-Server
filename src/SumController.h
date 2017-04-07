@@ -6,7 +6,7 @@
 #define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_MYCONTROLLER_H
 
 
-#include "server/Controller.h"
+#include "server/controller/Controller.h"
 
 class SumController : public Controller {
 public:

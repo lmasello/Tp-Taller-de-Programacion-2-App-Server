@@ -2,7 +2,7 @@
 #include "server/Server.h"
 #include "SumController.h"
 #include "TestController.h"
-#include "MongoController.h"
+#include "SongsController.h"
 #include "./logger/Logger.h"
 
 int main(void) {

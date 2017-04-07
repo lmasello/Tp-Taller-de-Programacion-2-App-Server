@@ -2,7 +2,7 @@
 #ifndef TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_CONTROLLER_H
 #define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_CONTROLLER_H
 
-#include "../lib/mongoose.h"
+#include "../../lib/mongoose.h"
 
 class Controller {
 

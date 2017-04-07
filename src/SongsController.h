@@ -5,7 +5,7 @@
 #ifndef TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_MONGOCONTROLLER_H
 #define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_MONGOCONTROLLER_H
 
-#include "server/Controller.h"
+#include "server/controller/Controller.h"
 #include <cstdint>
 #include <iostream>
 #include <vector>

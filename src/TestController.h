@@ -6,7 +6,7 @@
 #define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_TESTCONTROLLER_H
 
 
-#include "server/Controller.h"
+#include "server/controller/Controller.h"
 
 class TestController : public Controller {
 

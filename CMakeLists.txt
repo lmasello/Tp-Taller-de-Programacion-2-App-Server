@@ -15,14 +15,14 @@ set(SOURCE_FILES
         src/logger/syscalls/exceptions/SysCallException.h
         src/server/Server.cpp
         src/server/Server.h
-        src/server/Controller.cpp
-        src/server/Controller.h
+        src/server/controller/Controller.cpp
+        src/server/controller/Controller.h
         src/SumController.cpp
         src/SumController.h
         src/TestController.cpp
         src/TestController.h
-        src/MongoController.cpp
-        src/MongoController.h)
+        src/SongsController.cpp
+        src/SongsController.h src/server/interceptor/Interceptor.cpp src/server/interceptor/Interceptor.h src/server/interceptor/JwtInterceptor.cpp src/server/interceptor/JwtInterceptor.h)
 
 SET(CPACK_GENERATOR "DEB")
 SET(CPACK_PACKAGE_CONTACT 'Macri gato')

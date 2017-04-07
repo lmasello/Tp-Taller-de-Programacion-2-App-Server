@@ -4,7 +4,9 @@
 
 #include <vector>
 #include "../lib/mongoose.h"
-#include "Controller.h"
+#include "controller/Controller.h"
+#include "interceptor/Interceptor.h"
+#include "interceptor/JwtInterceptor.h"
 
 class Server {
 
@@ -16,11 +18,13 @@ public:
     void dispatchCall(struct mg_connection *c, int ev, void *p);
 
     void registerController(Controller *controller);
+    void registerInterceptor(Interceptor *interceptor);
 
 private:
     struct mg_mgr mgr;
     struct mg_connection *c;
     std::vector<Controller *> controllers;
+    std::vector<Interceptor *> interceptors;
 
     void sendNotFoundResponse(mg_connection *pConnection);
 };
