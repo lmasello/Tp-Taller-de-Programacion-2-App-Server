@@ -1,6 +1,6 @@
-#include "SongsController.h"
+#include "PostSongs.h"
 
-SongsController::SongsController() {
+PostSongs::PostSongs() {
     mongocxx::instance instance{}; // This should be done only once.
     mongocxx::uri uri("mongodb://localhost:27017");
     this->mongoClient = client(uri);
@@ -8,11 +8,11 @@ SongsController::SongsController() {
     this->coll = db["songs"];
 }
 
-void SongsController::process(struct mg_connection *c, int ev, void *p) {
+void PostSongs::process(struct mg_connection *c, int ev, void *p) {
     struct http_message *hm = (struct http_message *) p;
 
     auto parsed_body = json::parse(hm->body.p);
-    struct body_type body = {
+    struct song_t body = {
             parsed_body["id"].get<long>(),
             parsed_body["name"].get<std::string>(),
             parsed_body["content"].get<std::string>()
@@ -20,11 +20,11 @@ void SongsController::process(struct mg_connection *c, int ev, void *p) {
 
     if (this->existsSong(body.id)) {
         std::string response = ((json){
-                {"status", 400},
+                {"status", 409},
                 {"message", "Song with id " + std::to_string(body.id) + " already exists"}
         }).dump();
 
-        mg_send_head(c, 400, response.length(), "Content-Type: application/json;charset=UTF-8");
+        mg_send_head(c, 409, response.length(), "Content-Type: application/json;charset=UTF-8");
         mg_printf(c, "%s", response.c_str());
     } else {
         this->saveSong(body);
@@ -34,14 +34,12 @@ void SongsController::process(struct mg_connection *c, int ev, void *p) {
                 {"message", "Song with id " + std::to_string(body.id) + " created"}
         }).dump();
 
-        mg_send_head(c, 400, response.length(), "Content-Type: application/json;charset=UTF-8");
+        mg_send_head(c, 201, response.length(), "Content-Type: application/json;charset=UTF-8");
         mg_printf(c, "%s", response.c_str());
     }
-
-    mg_send_head(c, 201, 0, "Content-Type: application/json;charset=UTF-8");
 }
 
-bool SongsController::existsSong(long id) {
+bool PostSongs::existsSong(long id) {
     auto builder = bsoncxx::builder::stream::document{};
     value doc_value = builder << "_id" << id << finalize;
 
@@ -53,13 +51,13 @@ bool SongsController::existsSong(long id) {
     return false;
 }
 
-bool SongsController::saveSong(body_type body) {
+bool PostSongs::saveSong(song_t song) {
 
     auto builder = bsoncxx::builder::stream::document{};
     bsoncxx::document::value doc_value = builder
-            << "_id" << body.id
-            << "name" << body.name
-            << "content" << body.content
+            << "_id" << song.id
+            << "name" << song.name
+            << "content" << song.content
             << bsoncxx::builder::stream::finalize;
 
     bsoncxx::document::view view = doc_value.view();
@@ -67,6 +65,6 @@ bool SongsController::saveSong(body_type body) {
     return false;
 }
 
-bool SongsController::handles(const mg_str *method, const mg_str *url) {
+bool PostSongs::handles(const mg_str *method, const mg_str *url) {
     return mg_vcmp(method, "POST") == 0 && mg_vcmp(url, "/api/songs") == 0 ;
 }

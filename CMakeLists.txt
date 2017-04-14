@@ -17,8 +17,8 @@ set(SOURCE_FILES
         src/server/Server.h
         src/server/controller/Controller.cpp
         src/server/controller/Controller.h
-        src/server/controller/SongsController.cpp
-        src/server/controller/SongsController.h src/server/interceptor/Interceptor.cpp src/server/interceptor/Interceptor.h src/server/interceptor/JwtInterceptor.cpp src/server/interceptor/JwtInterceptor.h)
+        src/server/controller/PostSongs.cpp
+        src/server/controller/PostSongs.h src/server/interceptor/Interceptor.cpp src/server/interceptor/Interceptor.h src/server/interceptor/JwtInterceptor.cpp src/server/interceptor/JwtInterceptor.h src/server/controller/GetSongs.cpp src/server/controller/GetSongs.h src/server/domain/song.h)
 
 SET(CPACK_GENERATOR "DEB")
 SET(CPACK_PACKAGE_CONTACT 'Macri gato')

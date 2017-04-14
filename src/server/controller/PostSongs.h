@@ -1,9 +1,5 @@
-//
-// Created by german on 31/03/17.
-//
-
-#ifndef TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_MONGOCONTROLLER_H
-#define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_MONGOCONTROLLER_H
+#ifndef TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_POSTSONGS_H
+#define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_POSTSONGS_H
 
 #include "Controller.h"
 #include <cstdint>
@@ -15,6 +11,7 @@
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
 #include "../../lib/json/json.hpp"
+#include "../domain/song.h"
 
 using std::string;
 using json = nlohmann::json;
@@ -31,18 +28,12 @@ using bsoncxx::builder::stream::open_document;
 using mongocxx::stdx::optional;
 using bsoncxx::document::value;
 
-class SongsController : public Controller {
+class PostSongs : public Controller {
 public:
-    SongsController();
+    PostSongs();
 
     void process(struct mg_connection *c, int ev, void *p);
     bool handles(const mg_str *method, const mg_str *url);
-
-    struct body_type {
-        long id;
-        string name;
-        string content;
-    };
 
 private:
     mongocxx::client mongoClient;
@@ -50,8 +41,8 @@ private:
     mongocxx::collection coll;
 
     bool existsSong(long id);
-    bool saveSong(body_type song);
+    bool saveSong(song_t song);
 };
 
 
-#endif //TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_MONGOCONTROLLER_H
+#endif //TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_POSTSONGS_H
