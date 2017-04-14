@@ -21,12 +21,15 @@ using json = nlohmann::json;
 using mongocxx::client;
 using mongocxx::instance;
 using mongocxx::uri;
+using mongocxx::options::count;
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
 using bsoncxx::builder::stream::document;
 using bsoncxx::builder::stream::finalize;
 using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::open_document;
+using mongocxx::stdx::optional;
+using bsoncxx::document::value;
 
 class SongsController : public Controller {
 public:
@@ -45,6 +48,9 @@ private:
     mongocxx::client mongoClient;
     mongocxx::database db;
     mongocxx::collection coll;
+
+    bool existsSong(long id);
+    bool saveSong(body_type song);
 };
 
 

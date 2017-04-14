@@ -1,0 +1,16 @@
+//
+// Created by german on 07/04/17.
+//
+
+#ifndef TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_GETSONGS_H
+#define TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_GETSONGS_H
+
+
+
+class GetSongs {
+
+};
+
+
+
+#endif //TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_GETSONGS_H

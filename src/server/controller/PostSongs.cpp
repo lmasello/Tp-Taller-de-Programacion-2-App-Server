@@ -18,6 +18,43 @@ void SongsController::process(struct mg_connection *c, int ev, void *p) {
             parsed_body["content"].get<std::string>()
     };
 
+    if (this->existsSong(body.id)) {
+        std::string response = ((json){
+                {"status", 400},
+                {"message", "Song with id " + std::to_string(body.id) + " already exists"}
+        }).dump();
+
+        mg_send_head(c, 400, response.length(), "Content-Type: application/json;charset=UTF-8");
+        mg_printf(c, "%s", response.c_str());
+    } else {
+        this->saveSong(body);
+
+        std::string response = ((json){
+                {"status", 201},
+                {"message", "Song with id " + std::to_string(body.id) + " created"}
+        }).dump();
+
+        mg_send_head(c, 400, response.length(), "Content-Type: application/json;charset=UTF-8");
+        mg_printf(c, "%s", response.c_str());
+    }
+
+    mg_send_head(c, 201, 0, "Content-Type: application/json;charset=UTF-8");
+}
+
+bool SongsController::existsSong(long id) {
+    auto builder = bsoncxx::builder::stream::document{};
+    value doc_value = builder << "_id" << id << finalize;
+
+    optional<value> maybe_result = this->coll.find_one(doc_value.view());
+
+    if(maybe_result)
+        return true;
+
+    return false;
+}
+
+bool SongsController::saveSong(body_type body) {
+
     auto builder = bsoncxx::builder::stream::document{};
     bsoncxx::document::value doc_value = builder
             << "_id" << body.id
@@ -27,8 +64,7 @@ void SongsController::process(struct mg_connection *c, int ev, void *p) {
 
     bsoncxx::document::view view = doc_value.view();
     mongocxx::stdx::optional<mongocxx::result::insert_one> result = coll.insert_one(view);
-
-    mg_send_head(c, 201, 0, "Content-Type: application/json;charset=UTF-8");
+    return false;
 }
 
 bool SongsController::handles(const mg_str *method, const mg_str *url) {
