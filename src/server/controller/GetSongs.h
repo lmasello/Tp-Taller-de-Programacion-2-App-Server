@@ -13,6 +13,7 @@
 #include <mongocxx/uri.hpp>
 #include "../../lib/json/json.hpp"
 #include "../domain/song.h"
+#include "../../mongo/MongoClient.h"
 
 using std::string;
 using std::regex;
@@ -34,20 +35,25 @@ using bsoncxx::document::value;
 
 class GetSongs : public Controller {
 public:
-    GetSongs();
+    GetSongs(MongoClient *mongoClient);
 
     void process(struct mg_connection *c, int ev, void *p);
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
-    mongocxx::client mongoClient;
-    mongocxx::database db;
-    mongocxx::collection coll;
+    MongoClient *mongo_client;
 
-    optional<value> findSongById(long id);
+    optional<value> find_song_by_id(long id);
+    string get_uri(const mg_str *pStr);
+    bool uri_matches(const mg_str *pStr);
 
-    string getUri(const mg_str *pStr);
-    bool uriMatches(const mg_str *pStr);
+    string get_song_id_from_uri(mg_str *pStr);
+
+    string URI_REGEX = "/api/songs/(.*)";
+
+    void send_not_found_response(string basic_string, mg_connection *pConnection);
+
+    void send_song(bsoncxx::document::view view, mg_connection *pConnection);
 };
 
 #endif //TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_GETSONGS_H

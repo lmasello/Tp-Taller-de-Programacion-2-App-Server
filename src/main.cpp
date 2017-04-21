@@ -6,8 +6,11 @@
 int main(void) {
 
     Server *server = new Server("8000");
-    server->registerController(new PostSongs());
-    server->registerController(new GetSongs());
+
+    MongoClient *mongo_client = new MongoClient();
+
+    server->registerController(new PostSongs(mongo_client));
+    server->registerController(new GetSongs(mongo_client));
     server->start();
 
     return 0;

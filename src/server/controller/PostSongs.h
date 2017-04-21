@@ -10,9 +10,14 @@
 #include <mongocxx/client.hpp>
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
+#include <regex>
 #include "../../lib/json/json.hpp"
 #include "../domain/song.h"
+#include "../../mongo/MongoClient.h"
 
+using std::regex;
+using std::regex_match;
+using std::smatch;
 using std::string;
 using json = nlohmann::json;
 using mongocxx::client;
@@ -30,18 +35,25 @@ using bsoncxx::document::value;
 
 class PostSongs : public Controller {
 public:
-    PostSongs();
+    PostSongs(MongoClient *mongo_client);
 
     void process(struct mg_connection *c, int ev, void *p);
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
-    mongocxx::client mongoClient;
-    mongocxx::database db;
-    mongocxx::collection coll;
+    MongoClient *mongo_client;
+    bool exists(long id);
+    bool save_song(song_t song);
 
-    bool existsSong(long id);
-    bool saveSong(song_t song);
+    string URI_REGEX = "/api/songs";
+
+    bool uri_matches(const mg_str *pStr);
+
+    void send_already_exists_response(song_t song, mg_connection *pConnection);
+
+    void send_created_response(song_t song, mg_connection *pConnection);
+
+    song_t parse_body(string string);
 };
 
 
