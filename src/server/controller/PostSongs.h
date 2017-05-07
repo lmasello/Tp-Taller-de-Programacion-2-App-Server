@@ -14,6 +14,7 @@
 #include "../../lib/json/json.hpp"
 #include "../domain/song.h"
 #include "../../mongo/MongoClient.h"
+#include "../../logger/Logger.h"
 
 using std::regex;
 using std::regex_match;
@@ -41,6 +42,7 @@ public:
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
+    Logger *LOG = new Logger("POST SONGS");
     MongoClient *mongo_client;
     bool exists(long id);
     bool save_song(song_t song);

@@ -31,6 +31,8 @@ bool PostSongs::exists(long id) {
 
 bool PostSongs::save_song(song_t song) {
 
+    LOG->info("Creating new song {} id: {}", song.name, song.id);
+
     auto builder = bsoncxx::builder::stream::document{};
     bsoncxx::document::value doc_value = builder
             << "_id" << song.id

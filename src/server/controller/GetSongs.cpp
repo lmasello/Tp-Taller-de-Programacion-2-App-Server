@@ -12,13 +12,19 @@ void GetSongs::process(struct mg_connection *c, int ev, void *p) {
     optional<value> maybe_result = this->find_song_by_id(std::stol(song_id));
 
     if(maybe_result) {
-        this->send_song(maybe_result.value().view(), c);
+        if (this->is_decoded_request(&hm->query_string)) {
+            this->send_decoded_song(maybe_result.value().view(), c);
+        } else {
+            this->send_song(maybe_result.value().view(), c);
+        }
+
         return;
     }
     this->send_not_found_response(song_id, c);
 }
 
 optional<value> GetSongs::find_song_by_id(long id) {
+    LOG->debug("Get song by id {}", id);
     auto builder = bsoncxx::builder::stream::document{};
     value doc_value = builder << "_id" << id << finalize;
     return this->mongo_client->find_one(doc_value.view());
@@ -80,6 +86,24 @@ void GetSongs::send_song(bsoncxx::document::view view, mg_connection *c) {
     }).dump();
     mg_send_head(c, 200, response.length(), "Content-Type: application/json;charset=UTF-8");
     mg_printf(c, "%s", response.c_str());
+}
+
+void GetSongs::send_decoded_song(bsoncxx::document::view view, mg_connection *c) {
+    std::string decoded = base64_decode(view["content"].get_utf8().value.to_string());
+    mg_send_head(c, 200, decoded.length(), "Content-Type: audio/mpeg");
+    mg_printf(c, "%s", decoded.c_str());
+
+}
+
+bool GetSongs::is_decoded_request(mg_str *msg) {
+    if (msg->p == NULL)
+        return false;
+
+    string query_params = this->get_uri(msg);
+    unsigned long i = query_params.find("decode=") + 7;
+    string value = query_params.substr(i,4);
+
+    return value.compare("true") == 0;
 }
 
 

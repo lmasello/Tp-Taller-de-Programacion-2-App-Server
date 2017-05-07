@@ -14,6 +14,8 @@
 #include "../../lib/json/json.hpp"
 #include "../domain/song.h"
 #include "../../mongo/MongoClient.h"
+#include "../../logger/Logger.h"
+#include "../../lib/base64/base64.h"
 
 using std::string;
 using std::regex;
@@ -41,8 +43,8 @@ public:
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
+    Logger *LOG = new Logger("GET SONGS");
     MongoClient *mongo_client;
-
     optional<value> find_song_by_id(long id);
     string get_uri(const mg_str *pStr);
     bool uri_matches(const mg_str *pStr);
@@ -54,6 +56,10 @@ private:
     void send_not_found_response(string basic_string, mg_connection *pConnection);
 
     void send_song(bsoncxx::document::view view, mg_connection *pConnection);
+
+    bool is_decoded_request(mg_str *pStr);
+
+    void send_decoded_song(bsoncxx::document::view view, mg_connection *pConnection);
 };
 
 #endif //TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_GETSONGS_H

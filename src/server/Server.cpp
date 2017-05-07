@@ -16,6 +16,10 @@ Server::Server(const char *port) {
     struct mg_connection *c;
     mg_mgr_init(&mgr, this);
     c = mg_bind(&mgr, port, http_event_handler);
+    if (c == NULL) {
+        LOG->error("Can not bind port {} to server. Shutting down!", port);
+        exit(1);
+    }
     mg_set_protocol_http_websocket(c);
 
     //Add interceptors

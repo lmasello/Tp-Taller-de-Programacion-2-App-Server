@@ -25,7 +25,7 @@ public:
     void registerInterceptor(Interceptor *interceptor);
 
 private:
-    Logger *LOG = new Logger("Jwt Interceptor");
+    Logger *LOG = new Logger("Server");
 
     struct mg_mgr mgr;
     struct mg_connection *c;
