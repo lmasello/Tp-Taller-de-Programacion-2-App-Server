@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES
         src/main.cpp
-        src/lib/mongoose.h
-        src/lib/mongoose.c
+        src/lib/moongose/mongoose.h
+        src/lib/moongose/mongoose.c
         src/logger/Logger.cpp
         src/logger/Logger.h
         src/logger/lockFile/LockFile.cpp
@@ -15,14 +15,10 @@ set(SOURCE_FILES
         src/logger/syscalls/exceptions/SysCallException.h
         src/server/Server.cpp
         src/server/Server.h
-        src/server/Controller.cpp
-        src/server/Controller.h
-        src/SumController.cpp
-        src/SumController.h
-        src/TestController.cpp
-        src/TestController.h
-        src/MongoController.cpp
-        src/MongoController.h)
+        src/server/controller/Controller.cpp
+        src/server/controller/Controller.h
+        src/server/controller/PostSongs.cpp
+        src/server/controller/PostSongs.h src/server/interceptor/Interceptor.cpp src/server/interceptor/Interceptor.h src/server/interceptor/JwtInterceptor.cpp src/server/interceptor/JwtInterceptor.h src/server/controller/GetSongs.cpp src/server/controller/GetSongs.h src/server/domain/song.h src/mongo/MongoClient.cpp src/mongo/MongoClient.h src/lib/base64/base64.cpp src/lib/base64/base64.h)
 
 SET(CPACK_GENERATOR "DEB")
 SET(CPACK_PACKAGE_CONTACT 'Macri gato')

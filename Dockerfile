@@ -10,9 +10,6 @@ RUN wget https://github.com/mongodb/mongo-c-driver/releases/download/1.6.1/mongo
     ./configure --disable-automatic-init-and-cleanup && \
     make && make install
 
-
-
-
 RUN git clone https://github.com/mongodb/mongo-cxx-driver.git \
         --branch releases/stable --depth 1 && \
     cd mongo-cxx-driver/build && \
@@ -20,12 +17,12 @@ RUN git clone https://github.com/mongodb/mongo-cxx-driver.git \
     make EP_mnmlstc_core && \
     make && make install
 
-COPY . /usr/src/music-io-application-server
-WORKDIR /usr/src/music-io-application-server
+ADD . /code
+WORKDIR /code
 
 RUN cmake .
 RUN make
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "./Tp_Taller_de_Programacion_2_App_Server"]
+CMD ["sh", "-c", "Tp_Taller_de_Programacion_2_App_Server"]

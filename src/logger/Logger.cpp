@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Logger.h"
 
 using namespace std;
@@ -39,12 +40,14 @@ void Logger::debug(const string data) {
 }
 
 void Logger::logLocking(const string data, LogLevel level) {
-	if (this->level <= level)
+	if (this->level <= level){
 		log(data, level);
+	}
 }
 
 void Logger::log(const string data, LogLevel level) {
 	string logLine = createLogLine(data, level);
+	std::cout << logLine;
 	lockFile.write(logLine.c_str(), logLine.length());
 }
 
