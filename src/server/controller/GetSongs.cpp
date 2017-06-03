@@ -12,7 +12,7 @@ void GetSongs::process(struct mg_connection *c, int ev, void *p) {
     optional<value> maybe_result = this->find_song_by_id(std::stol(song_id));
 
     if(maybe_result) {
-        if (this->is_decoded_request(&hm->query_string)) {
+        if (this->is_decoded_request(song_id)) {
             this->send_decoded_song(maybe_result.value().view(), c);
         } else {
             this->send_song(maybe_result.value().view(), c);
@@ -90,20 +90,21 @@ void GetSongs::send_song(bsoncxx::document::view view, mg_connection *c) {
 
 void GetSongs::send_decoded_song(bsoncxx::document::view view, mg_connection *c) {
     std::string decoded = base64_decode(view["content"].get_utf8().value.to_string());
-    mg_send_head(c, 200, decoded.length(), "Content-Type: audio/mpeg");
-    mg_printf(c, "%s", decoded.c_str());
+
+    string headers = string("Content-Type: audio/mpeg\r\n");
+    headers.append("Content-Disposition: attachment; filename=\"");
+    headers.append(view["name"].get_utf8().value.to_string()).append("\"\r\n");
+    headers.append("Connection: keep-alive\r\n");
+    headers.append("Accept-Ranges: bytes");
+
+    mg_send_head(c, 200, decoded.length(), headers.c_str());
+    mg_send(c, (void*) decoded.c_str(), (int) decoded.length());
 
 }
 
-bool GetSongs::is_decoded_request(mg_str *msg) {
-    if (msg->p == NULL)
-        return false;
-
-    string query_params = this->get_uri(msg);
-    unsigned long i = query_params.find("decode=") + 7;
-    string value = query_params.substr(i,4);
-
-    return value.compare("true") == 0;
+bool GetSongs::is_decoded_request(string songId) {
+    string value = songId.substr(songId.length() - 4, songId.length());
+    return value.compare(".mp3") == 0;
 }
 
 
