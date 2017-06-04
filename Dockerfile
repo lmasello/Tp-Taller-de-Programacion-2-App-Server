@@ -17,7 +17,7 @@ RUN git clone https://github.com/mongodb/mongo-cxx-driver.git \
     make EP_mnmlstc_core && \
     make && make install
 
-###########################################3
+###########################################
 # Mongo Installation:
 # Import MongoDB public GPG key AND create a MongoDB list file
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927

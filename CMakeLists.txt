@@ -4,24 +4,35 @@ project(Tp_Taller_de_Programacion_2_App_Server)
 set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES
-        src/main.cpp
-        src/lib/moongose/mongoose.h
-        src/lib/moongose/mongoose.c
-        src/logger/Logger.cpp
-        src/logger/Logger.h
-        src/logger/lockFile/LockFile.cpp
-        src/logger/lockFile/LockFile.h
-        src/logger/syscalls/SysCalls.h
-        src/logger/syscalls/exceptions/SysCallException.h
-        src/server/Server.cpp
-        src/server/Server.h
-        src/server/controller/Controller.cpp
-        src/server/controller/Controller.h
-        src/server/controller/PostSongs.cpp
-        src/server/controller/PostSongs.h src/server/interceptor/Interceptor.cpp src/server/interceptor/Interceptor.h src/server/interceptor/JwtInterceptor.cpp src/server/interceptor/JwtInterceptor.h src/server/controller/GetSongs.cpp src/server/controller/GetSongs.h src/server/domain/song.h src/mongo/MongoClient.cpp src/mongo/MongoClient.h src/lib/base64/base64.cpp src/lib/base64/base64.h)
+        src/main/main.cpp
+        src/main/lib/moongose/mongoose.h
+        src/main/lib/moongose/mongoose.c
+        src/main/logger/Logger.cpp
+        src/main/logger/Logger.h
+        src/main/logger/lockFile/LockFile.cpp
+        src/main/logger/lockFile/LockFile.h
+        src/main/logger/syscalls/SysCalls.h
+        src/main/logger/syscalls/exceptions/SysCallException.h
+        src/main/server/Server.cpp
+        src/main/server/Server.h
+        src/main/server/controller/Controller.cpp
+        src/main/server/controller/Controller.h
+        src/main/server/controller/PostSongs.cpp
+        src/main/server/controller/PostSongs.h
+        src/main/server/interceptor/Interceptor.cpp
+        src/main/server/interceptor/Interceptor.h
+        src/main/server/interceptor/JwtInterceptor.cpp
+        src/main/server/interceptor/JwtInterceptor.h
+        src/main/server/controller/GetSongs.cpp
+        src/main/server/controller/GetSongs.h
+        src/main/server/domain/song.h
+        src/main/mongo/MongoClient.cpp
+        src/main/mongo/MongoClient.h
+        src/main/lib/base64/base64.cpp
+        src/main/lib/base64/base64.h)
 
-SET(CPACK_GENERATOR "DEB")
-SET(CPACK_PACKAGE_CONTACT 'Macri gato')
+set(CPACK_GENERATOR "DEB")
+set(CPACK_PACKAGE_CONTACT 'Macri gato')
 
 #Adding mongo dependency
 find_package(PkgConfig REQUIRED)
@@ -33,4 +44,28 @@ add_executable(Tp_Taller_de_Programacion_2_App_Server ${SOURCE_FILES})
 
 target_link_libraries(Tp_Taller_de_Programacion_2_App_Server ${MONGOCXX_LIBRARIES})
 
-INCLUDE(CPack)
+include(CPack)
+
+
+###########################################3
+# TESTS
+# Gtest
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest)
+enable_testing()
+include_directories(${GTEST_SOURCE_DIR}/include ${GTEST_SOURCE_DIR})
+
+set (TEST_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/test")
+
+include_directories(${TEST_SOURCE_FILES})
+
+add_executable(Tests
+        ${TEST_SOURCE_FILES}/mainTests.cpp
+        )
+
+target_link_libraries(Tests gtest gtest_main)
+#target_link_libraries (Tests Tp_Taller_de_Programacion_2_App_Server)
+
+add_test(
+        NAME Tests
+        COMMAND Tests
+)
