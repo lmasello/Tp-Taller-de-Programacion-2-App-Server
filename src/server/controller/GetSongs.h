@@ -57,7 +57,7 @@ private:
 
     void send_song(bsoncxx::document::view view, mg_connection *pConnection);
 
-    bool is_decoded_request(mg_str *pStr);
+    bool is_decoded_request(string pStr);
 
     void send_decoded_song(bsoncxx::document::view view, mg_connection *pConnection);
 };
