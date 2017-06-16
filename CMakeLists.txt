@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
-project(Tp_Taller_de_Programacion_2_App_Server)
+project(music-io-app)
 
 set(CMAKE_CXX_STANDARD 11)
+SET (CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -fprofile-arcs -ftest-coverage")
 
 set(SOURCE_FILES
-        src/main/main.cpp
         src/main/lib/moongose/mongoose.h
         src/main/lib/moongose/mongoose.c
         src/main/logger/Logger.cpp
@@ -34,15 +34,21 @@ set(SOURCE_FILES
 set(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_CONTACT 'Macri gato')
 
+set (MAIN_SERVER src/main/main.cpp)
+
+add_library(music-io-app ${SOURCE_FILES})
+
+add_executable(music-io-app-server ${MAIN_SERVER})
+target_link_libraries (music-io-app-server music-io-app)
+
+
 #Adding mongo dependency
 find_package(PkgConfig REQUIRED)
 pkg_search_module(MONGOCXX REQUIRED libmongocxx)
 include_directories(${MONGOCXX_INCLUDE_DIRS})
 link_directories(${MONGOCXX_LIBRARY_DIRS})
 
-add_executable(Tp_Taller_de_Programacion_2_App_Server ${SOURCE_FILES})
-
-target_link_libraries(Tp_Taller_de_Programacion_2_App_Server ${MONGOCXX_LIBRARIES})
+target_link_libraries(music-io-app ${MONGOCXX_LIBRARIES})
 
 include(CPack)
 
@@ -58,14 +64,14 @@ set (TEST_SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/test")
 
 include_directories(${TEST_SOURCE_FILES})
 
-add_executable(Tests
+add_executable(music-io-app-tests
         ${TEST_SOURCE_FILES}/mainTests.cpp
-        )
+        src/test/GetSongsTest.cpp src/test/GetSongsTest.h)
 
-target_link_libraries(Tests gtest gtest_main)
-#target_link_libraries (Tests Tp_Taller_de_Programacion_2_App_Server)
+target_link_libraries(music-io-app-tests gtest gtest_main)
+target_link_libraries(music-io-app-tests music-io-app)
 
 add_test(
-        NAME Tests
-        COMMAND Tests
+        NAME music-io-app-tests
+        COMMAND music-io-app-tests
 )
