@@ -5,22 +5,14 @@ GetSongs::GetSongs(MongoClient *mongo_client) {
     this->mongo_client = mongo_client;
 }
 
-void GetSongs::process(struct mg_connection *c, int ev, void *p) {
-    struct http_message *hm = (struct http_message *) p;
-
-    string song_id = this->get_song_id_from_uri(&hm->uri);
+http_response GetSongs::do_process(http_request request) {
+    string song_id = this->get_song_id_from_uri(request.uri);
     optional<value> maybe_result = this->find_song_by_id(std::stol(song_id));
 
     if(maybe_result) {
-        if (this->is_decoded_request(song_id)) {
-            this->send_decoded_song(maybe_result.value().view(), c);
-        } else {
-            this->send_song(maybe_result.value().view(), c);
-        }
-
-        return;
+        return this->send_song(song_id, maybe_result.value().view());
     }
-    this->send_not_found_response(song_id, c);
+    return this->send_not_found_response(song_id);
 }
 
 optional<value> GetSongs::find_song_by_id(long id) {
@@ -35,15 +27,14 @@ bool GetSongs::handles(const mg_str *method, const mg_str *url) {
 }
 
 bool GetSongs::uri_matches(const mg_str *mgStr) {
-    string endpoint = this->get_uri(mgStr);
+    string endpoint = this->get_uri(string(mgStr->p));
     regex r1(GetSongs::URI_REGEX);
     regex r2(GetSongs::URI_REGEX + "/");
     smatch m;
     return regex_match(endpoint, m, r1) || regex_match(endpoint, m, r2);
 }
 
-string GetSongs::get_uri(const mg_str *mgStr) {
-    string uri = string(mgStr->p);
+string GetSongs::get_uri(string uri) {
     return uri.substr(0,uri.find(" "));
 }
 
@@ -52,8 +43,8 @@ string GetSongs::get_uri(const mg_str *mgStr) {
  * @param mgStr
  * @return
  */
-string GetSongs::get_song_id_from_uri(mg_str *mgStr) {
-    string endpoint = this->get_uri(mgStr);
+string GetSongs::get_song_id_from_uri(string uri) {
+    string endpoint = this->get_uri(uri);
     smatch m;
 
     regex r1(GetSongs::URI_REGEX);
@@ -67,47 +58,53 @@ string GetSongs::get_song_id_from_uri(mg_str *mgStr) {
     return m[1];
 }
 
-void GetSongs::send_not_found_response(string song_id, mg_connection *c) {
+http_response GetSongs::send_not_found_response(string song_id) {
     std::string response = ((json){
             {"status", 404},
             {"message", "Can't find song with id " + song_id}
     }).dump();
-    mg_send_head(c, 404, response.length(), "Content-Type: application/json;charset=UTF-8");
-    mg_printf(c, "%s", response.c_str());
-
+    string headers = "Content-Type: application/json;charset=UTF-8";
+    return http_response {404, response, headers};
 }
 
-void GetSongs::send_song(bsoncxx::document::view view, mg_connection *c) {
+http_response GetSongs::send_song(string song_id, bsoncxx::document::view view) {
+    if (this->is_decoded_request(song_id)) {
+        return this->send_decoded_song(view);
+    }
+
     long id = view["_id"].get_int64();
     std::string response = ((json){
             {"id", id},
             {"name", view["name"].get_utf8().value.to_string(),},
             {"content", view["content"].get_utf8().value.to_string()}
     }).dump();
-    mg_send_head(c, 200, response.length(), "Content-Type: application/json;charset=UTF-8");
-    mg_printf(c, "%s", response.c_str());
+    string headers = "Content-Type: application/json;charset=UTF-8";
+    return http_response {200, response, headers};
 }
 
-void GetSongs::send_decoded_song(bsoncxx::document::view view, mg_connection *c) {
-    std::string decoded = base64_decode(view["content"].get_utf8().value.to_string());
+http_response GetSongs::send_decoded_song(bsoncxx::document::view view) {
+    string content = this->get_decoded_content(view);
+    string headers = this->send_decoded_song_headers(view);
+    return http_response {200, content, headers};
+}
 
+string GetSongs::get_decoded_content(bsoncxx::document::view view) {
+    std::string decoded = base64_decode(view["content"].get_utf8().value.to_string());
+}
+
+string GetSongs::send_decoded_song_headers(bsoncxx::document::view view) {
     string headers = string("Content-Type: audio/mpeg\r\n");
     headers.append("Content-Disposition: attachment; filename=\"");
     headers.append(view["name"].get_utf8().value.to_string()).append("\"\r\n");
     headers.append("Connection: keep-alive\r\n");
     headers.append("Accept-Ranges: bytes");
-
-    mg_send_head(c, 200, decoded.length(), headers.c_str());
-    mg_send(c, (void*) decoded.c_str(), (int) decoded.length());
-
+    return headers;
 }
 
 bool GetSongs::is_decoded_request(string songId) {
+    if (songId.length() < 4) {
+        return false;
+    }
     string value = songId.substr(songId.length() - 4, songId.length());
     return value.compare(".mp3") == 0;
 }
-
-
-
-
-

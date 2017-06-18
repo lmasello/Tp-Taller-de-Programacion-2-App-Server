@@ -36,30 +36,35 @@ using mongocxx::stdx::optional;
 using bsoncxx::document::value;
 
 class GetSongs : public Controller {
+
 public:
     GetSongs(MongoClient *mongoClient);
 
-    void process(struct mg_connection *c, int ev, void *p);
+    http_response do_process(http_request request);
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
     Logger *LOG = new Logger("GET SONGS", true);
     MongoClient *mongo_client;
     optional<value> find_song_by_id(long id);
-    string get_uri(const mg_str *pStr);
+    string get_uri(string uri);
     bool uri_matches(const mg_str *pStr);
 
-    string get_song_id_from_uri(mg_str *pStr);
+    string get_song_id_from_uri(string uri);
 
     string URI_REGEX = "/api/songs/(.*)";
 
-    void send_not_found_response(string basic_string, mg_connection *pConnection);
-
-    void send_song(bsoncxx::document::view view, mg_connection *pConnection);
+    http_response send_not_found_response(string basic_string);
 
     bool is_decoded_request(string pStr);
 
-    void send_decoded_song(bsoncxx::document::view view, mg_connection *pConnection);
+    http_response send_song(string id, bsoncxx::document::view view);
+
+    http_response send_decoded_song(bsoncxx::document::view view);
+
+    string get_decoded_content(bsoncxx::document::view view);
+
+    string send_decoded_song_headers(bsoncxx::document::view view);
 };
 
 #endif //TP_TALLER_DE_PROGRAMACION_2_APP_SERVER_GETSONGS_H

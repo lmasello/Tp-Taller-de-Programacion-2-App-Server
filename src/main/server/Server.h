@@ -6,8 +6,7 @@
 #include "../lib/moongose/mongoose.h"
 #include "../lib/json/json.hpp"
 #include "controller/Controller.h"
-#include "interceptor/Interceptor.h"
-#include "interceptor/JwtInterceptor.h"
+#include "../logger/Logger.h"
 
 using std::string;
 using json = nlohmann::json;
@@ -24,7 +23,6 @@ public:
     void dispatchCall(struct mg_connection *c, int ev, void *p);
 
     void registerController(Controller *controller);
-    void registerInterceptor(Interceptor *interceptor);
 
 private:
     Logger *LOG;
@@ -32,7 +30,6 @@ private:
     struct mg_mgr mgr;
     struct mg_connection *c;
     std::vector<Controller *> controllers;
-    std::vector<Interceptor *> interceptors;
 
     void sendNotFoundResponse(mg_connection *pConnection, http_message* hm);
 };

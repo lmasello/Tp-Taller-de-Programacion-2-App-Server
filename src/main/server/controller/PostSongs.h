@@ -38,7 +38,8 @@ class PostSongs : public Controller {
 public:
     PostSongs(MongoClient *mongo_client);
 
-    void process(struct mg_connection *c, int ev, void *p);
+    http_response do_process(http_request request);
+
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
@@ -51,9 +52,9 @@ private:
 
     bool uri_matches(const mg_str *pStr);
 
-    void send_already_exists_response(song_t song, mg_connection *pConnection);
+    http_response send_already_exists_response(song_t song);
 
-    void send_created_response(song_t song, mg_connection *pConnection);
+    http_response send_created_response(song_t song);
 
     song_t parse_body(string string);
 };

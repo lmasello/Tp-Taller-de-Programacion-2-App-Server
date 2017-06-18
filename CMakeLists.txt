@@ -19,10 +19,6 @@ set(SOURCE_FILES
         src/main/server/controller/Controller.h
         src/main/server/controller/PostSongs.cpp
         src/main/server/controller/PostSongs.h
-        src/main/server/interceptor/Interceptor.cpp
-        src/main/server/interceptor/Interceptor.h
-        src/main/server/interceptor/JwtInterceptor.cpp
-        src/main/server/interceptor/JwtInterceptor.h
         src/main/server/controller/GetSongs.cpp
         src/main/server/controller/GetSongs.h
         src/main/server/domain/song.h

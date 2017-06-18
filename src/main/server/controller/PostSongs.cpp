@@ -4,16 +4,14 @@ PostSongs::PostSongs(MongoClient *mongo_client) {
     this->mongo_client = mongo_client;
 }
 
-void PostSongs::process(struct mg_connection *c, int ev, void *p) {
-    struct http_message *hm = (struct http_message *) p;
-    struct song_t body = this->parse_body(string(hm->body.p).substr(0, hm->body.len));
+http_response PostSongs::do_process(http_request request) {
+    struct song_t body = this->parse_body(request.body);
 
     if (this->exists(body.id)) {
-        this->send_already_exists_response(body, c);
+        return this->send_already_exists_response(body);
     } else {
         this->save_song(body);
-        this->send_created_response(body, c);
-
+        return this->send_created_response(body);
     }
 }
 
@@ -30,9 +28,7 @@ bool PostSongs::exists(long id) {
 }
 
 bool PostSongs::save_song(song_t song) {
-
     LOG->info("Creating new song {} id: {}", song.name, song.id);
-
     auto builder = bsoncxx::builder::stream::document{};
     bsoncxx::document::value doc_value = builder
             << "_id" << song.id
@@ -60,24 +56,22 @@ bool PostSongs::uri_matches(const mg_str *mgStr) {
     return regex_match(endpoint, m, r1) || regex_match(endpoint, m, r2);
 }
 
-void PostSongs::send_already_exists_response(song_t song, mg_connection *c) {
+http_response PostSongs::send_already_exists_response(song_t song) {
     std::string response = ((json){
             {"status", 409},
             {"message", "Song with id " + std::to_string(song.id) + " already exists"}
     }).dump();
-
-    mg_send_head(c, 409, response.length(), "Content-Type: application/json;charset=UTF-8");
-    mg_printf(c, "%s", response.c_str());
+    string headers = "Content-Type: application/json;charset=UTF-8";
+    return http_response {409, response, headers};
 }
 
-void PostSongs::send_created_response(song_t song, mg_connection *c) {
+http_response PostSongs::send_created_response(song_t song) {
     std::string response = ((json){
             {"status", 201},
             {"message", "Song with id " + std::to_string(song.id) + " created"}
     }).dump();
-
-    mg_send_head(c, 201, response.length(), "Content-Type: application/json;charset=UTF-8");
-    mg_printf(c, "%s", response.c_str());
+    string headers = "Content-Type: application/json;charset=UTF-8";
+    return http_response {201, response, headers};
 }
 
 song_t PostSongs::parse_body(string json) {

@@ -9,6 +9,11 @@
 #include "../main/server/controller/GetSongs.h"
 #include "../main/lib/moongose/mongoose.h"
 
+#include <bsoncxx/json.hpp>
+#include "../main/lib/json/json.hpp"
+
+using json = nlohmann::json;
+
 class IntegrationTest : public ::testing::Test {
 public:
     IntegrationTest();

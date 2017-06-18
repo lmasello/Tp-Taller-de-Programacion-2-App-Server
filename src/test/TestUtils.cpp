@@ -43,3 +43,15 @@ string TestUtils::get(string uri) {
     mg_mgr_free(&mgr);
     return response;
 }
+
+string TestUtils::post(string uri, string body) {
+    struct mg_mgr mgr;
+    mg_mgr_init(&mgr, NULL);
+    mg_connect_http(&mgr, ev_handler, uri.c_str(), NULL, body.c_str());
+    while (s_exit_flag == 0) {
+        mg_mgr_poll(&mgr, 1000);
+    }
+    mg_mgr_free(&mgr);
+    cout << response << endl;
+    return response;
+}

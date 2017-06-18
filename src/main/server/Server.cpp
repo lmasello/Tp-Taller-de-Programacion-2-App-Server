@@ -22,16 +22,10 @@ Server::Server(const char *port, bool debug) {
         exit(1);
     }
     mg_set_protocol_http_websocket(c);
-
-    //Add interceptors
-    this->registerInterceptor(new JwtInterceptor());
 }
 
 Server::~Server() {
     delete LOG;
-    for(Interceptor *interceptor : this->interceptors) {
-        delete interceptor;
-    }
     for(Controller *controller : this->controllers) {
         delete controller;
     }
@@ -43,13 +37,6 @@ void Server::registerController(Controller *controller) {
     this->controllers.push_back(controller);
 }
 
-void Server::registerInterceptor(Interceptor *interceptor) {
-    LOG->info("Registering new interceptor");
-    this->interceptors.push_back(interceptor);
-}
-
-
-
 void Server::start() {
     for (;;) {
         mg_mgr_poll(&mgr, 1000);
@@ -59,10 +46,6 @@ void Server::start() {
 void Server::dispatchCall(struct mg_connection *c, int ev, void *ev_data) {
 
     struct http_message *hm = (struct http_message *) ev_data;
-
-    for(Interceptor *interceptor : this->interceptors) {
-        interceptor->intercept(c, ev, ev_data);
-    }
 
     for(Controller *controller : this->controllers) {
         if (controller->handles(&hm->method, &hm->uri)) {

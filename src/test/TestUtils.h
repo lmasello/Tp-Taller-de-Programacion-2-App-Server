@@ -10,6 +10,7 @@ using namespace std;
 class TestUtils {
 public:
     static string get(string uri);
+    static string post(string uri, string body);
 };
 
 
