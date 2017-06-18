@@ -3,8 +3,9 @@
 
 using namespace std;
 
-Logger::Logger(string logName) : lockFile(LOG_FILE), name(logName) {
+Logger::Logger(string logName, bool console) : lockFile(LOG_FILE), name(logName) {
 	this->level = LogLevel::INFO;
+	this->console = console;
 	this->initializeEnumMapValues();
 }
 
@@ -47,7 +48,8 @@ void Logger::logLocking(const string data, LogLevel level) {
 
 void Logger::log(const string data, LogLevel level) {
 	string logLine = createLogLine(data, level);
-	std::cout << logLine;
+	if (this->console)
+		std::cout << logLine;
 	lockFile.write(logLine.c_str(), logLine.length());
 }
 

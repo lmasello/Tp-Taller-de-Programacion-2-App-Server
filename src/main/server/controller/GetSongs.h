@@ -43,7 +43,7 @@ public:
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
-    Logger *LOG = new Logger("GET SONGS");
+    Logger *LOG = new Logger("GET SONGS", true);
     MongoClient *mongo_client;
     optional<value> find_song_by_id(long id);
     string get_uri(const mg_str *pStr);

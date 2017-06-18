@@ -3,10 +3,11 @@
 
 #include <gtest/gtest.h>
 #include "../main/mongo/MongoClient.h"
+#include "../main/server/Server.h"
+#include "../main/server/controller/GetSongs.h"
 
 class GetSongsTest : public ::testing::Test {
 public:
-    GetSongsTest();
 };
 
 

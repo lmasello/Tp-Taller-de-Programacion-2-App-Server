@@ -45,7 +45,7 @@ public:
 			DEBUG = 0, INFO = 1, WARN = 2, ERROR = 3
 	};
 
-	Logger(string logName);
+	Logger(string logName, bool console);
 	Logger(LogLevel logLevel, string logName);
 
 	virtual ~Logger();
@@ -85,6 +85,7 @@ private:
 	LockFile lockFile;
 	string name;
 	LogLevel level;
+	bool console;
 };
 
 #endif /* LOGGER_LOGGER_H_ */

@@ -21,7 +21,7 @@ class MongoClient {
 
 public:
 
-    MongoClient();
+    MongoClient(std::string collection);
 
     bool exists_song(long id);
 

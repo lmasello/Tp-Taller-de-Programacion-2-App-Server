@@ -14,7 +14,7 @@ public:
 
 
 private:
-    Logger *LOG = new Logger("Jwt Interceptor");
+    Logger *LOG = new Logger("Jwt Interceptor", false);
 };
 
 

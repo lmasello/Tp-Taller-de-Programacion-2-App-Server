@@ -10,7 +10,8 @@ void http_event_handler(struct mg_connection *c, int ev, void *p) {
     }
 }
 
-Server::Server(const char *port) {
+Server::Server(const char *port, bool debug) {
+    LOG = new Logger("Server", debug);
     LOG->info("Building new server on port {}", port);
 
     struct mg_connection *c;
@@ -26,6 +27,17 @@ Server::Server(const char *port) {
     this->registerInterceptor(new JwtInterceptor());
 }
 
+Server::~Server() {
+    delete LOG;
+    for(Interceptor *interceptor : this->interceptors) {
+        delete interceptor;
+    }
+    for(Controller *controller : this->controllers) {
+        delete controller;
+    }
+    delete c;
+}
+
 void Server::registerController(Controller *controller) {
     LOG->info("Registering new controller");
     this->controllers.push_back(controller);
@@ -36,13 +48,13 @@ void Server::registerInterceptor(Interceptor *interceptor) {
     this->interceptors.push_back(interceptor);
 }
 
+
+
 void Server::start() {
     for (;;) {
         mg_mgr_poll(&mgr, 1000);
     }
 }
-
-
 
 void Server::dispatchCall(struct mg_connection *c, int ev, void *ev_data) {
 

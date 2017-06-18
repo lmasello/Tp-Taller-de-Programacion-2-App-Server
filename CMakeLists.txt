@@ -66,7 +66,7 @@ include_directories(${TEST_SOURCE_FILES})
 
 add_executable(music-io-app-tests
         ${TEST_SOURCE_FILES}/mainTests.cpp
-        src/test/GetSongsTest.cpp src/test/GetSongsTest.h)
+        src/test/GetSongsTest.cpp src/test/GetSongsTest.h src/test/IntegrationTest.cpp src/test/IntegrationTest.h src/test/TestUtils.cpp src/test/TestUtils.h src/test/PostSongsTest.cpp src/test/PostSongsTest.h)
 
 target_link_libraries(music-io-app-tests gtest gtest_main)
 target_link_libraries(music-io-app-tests music-io-app)

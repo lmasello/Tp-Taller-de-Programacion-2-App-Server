@@ -15,7 +15,9 @@ using json = nlohmann::json;
 class Server {
 
 public:
-    Server(const char *port);
+    Server(const char *port, bool debug);
+
+    virtual ~Server();
 
     void start();
 
@@ -25,7 +27,7 @@ public:
     void registerInterceptor(Interceptor *interceptor);
 
 private:
-    Logger *LOG = new Logger("Server");
+    Logger *LOG;
 
     struct mg_mgr mgr;
     struct mg_connection *c;

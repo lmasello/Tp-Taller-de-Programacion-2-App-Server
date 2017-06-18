@@ -42,7 +42,7 @@ public:
     bool handles(const mg_str *method, const mg_str *url);
 
 private:
-    Logger *LOG = new Logger("POST SONGS");
+    Logger *LOG = new Logger("POST SONGS", true);
     MongoClient *mongo_client;
     bool exists(long id);
     bool save_song(song_t song);
