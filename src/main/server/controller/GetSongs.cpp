@@ -89,7 +89,7 @@ http_response GetSongs::send_decoded_song(bsoncxx::document::view view) {
 }
 
 string GetSongs::get_decoded_content(bsoncxx::document::view view) {
-    std::string decoded = base64_decode(view["content"].get_utf8().value.to_string());
+    return base64_decode(view["content"].get_utf8().value.to_string());
 }
 
 string GetSongs::send_decoded_song_headers(bsoncxx::document::view view) {
