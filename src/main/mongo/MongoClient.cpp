@@ -15,3 +15,11 @@ optional<mongocxx::result::insert_one> MongoClient::insert_one(bsoncxx::document
 optional<value> MongoClient::find_one(bsoncxx::document::view view) {
     return this->coll.find_one(view);
 }
+
+optional<mongocxx::result::delete_result> MongoClient::delete_one(bsoncxx::document::view view) {
+    return this->coll.delete_one(view);
+}
+
+void MongoClient::drop() {
+    this->coll.drop();
+}

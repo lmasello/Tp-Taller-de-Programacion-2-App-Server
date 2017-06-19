@@ -4,8 +4,11 @@
 
 #include <string>
 #include "../main/lib/moongose/mongoose.h"
+#include "../main/mongo/MongoClient.h"
 
 using namespace std;
+
+static MongoClient *mongo_client = new MongoClient("test");
 
 class TestUtils {
 public:

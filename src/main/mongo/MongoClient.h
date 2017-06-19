@@ -23,17 +23,18 @@ public:
 
     MongoClient(std::string collection);
 
-    bool exists_song(long id);
-
     optional<mongocxx::result::insert_one> insert_one(bsoncxx::document::view view);
 
     optional<value> find_one(bsoncxx::document::view view);
+
+    optional<mongocxx::result::delete_result> delete_one(bsoncxx::document::view view);
+
+    void drop();
 
 private:
     mongocxx::client mongo_client;
     mongocxx::database db;
     mongocxx::collection coll;
-
 };
 
 
