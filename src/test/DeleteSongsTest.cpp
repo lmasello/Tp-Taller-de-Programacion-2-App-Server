@@ -2,13 +2,19 @@
 
 long delete_song_id = 1;
 std::string delete_song_name = "test song name";
-std::string delete_content = "Song content test";
 std::string delete_encoded_content = "U29uZyBjb250ZW50IHRlc3QK";
 
 TEST_F (DeleteSongsTest, should_handle_call) {
     //should handle
     const mg_str method_1 = {"DELETE", 6};
     const mg_str url_1 = {"/api/songs/1", 12};
+    ASSERT_TRUE(this->delete_songs->handles(&method_1, &url_1));
+}
+
+TEST_F (DeleteSongsTest, should_handle_call_2) {
+    //should handle
+    const mg_str method_1 = {"DELETE", 6};
+    const mg_str url_1 = {"/api/songs/1/", 12};
     ASSERT_TRUE(this->delete_songs->handles(&method_1, &url_1));
 }
 

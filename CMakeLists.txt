@@ -65,7 +65,7 @@ include_directories(${TEST_SOURCE_FILES})
 
 add_executable(music-io-app-tests
         ${TEST_SOURCE_FILES}/mainTests.cpp
-        src/test/GetSongsTest.cpp src/test/GetSongsTest.h src/test/TestUtils.cpp src/test/TestUtils.h src/test/PostSongsTest.cpp src/test/PostSongsTest.h src/test/DeleteSongsTest.cpp src/test/DeleteSongsTest.h)
+        src/test/GetSongsTest.cpp src/test/GetSongsTest.h src/test/TestUtils.h src/test/PostSongsTest.cpp src/test/PostSongsTest.h src/test/DeleteSongsTest.cpp src/test/DeleteSongsTest.h)
 
 target_link_libraries(music-io-app-tests gtest gtest_main)
 target_link_libraries(music-io-app-tests music-io-app)
@@ -84,6 +84,8 @@ set(CMAKE_BUILD_TYPE "Debug")
 if(CMAKE_COMPILER_IS_GNUCXX)
     include(CodeCoverage)
     APPEND_COVERAGE_COMPILER_FLAGS()
+    SET(COVERAGE_EXCLUDES 'lib/*' '/usr/*')
+
     SETUP_TARGET_FOR_COVERAGE(
         NAME coverage                                               # New target name
         EXECUTABLE music-io-app-tests -j ${PROCESSOR_COUNT}         # Executable in PROJECT_BINARY_DIR

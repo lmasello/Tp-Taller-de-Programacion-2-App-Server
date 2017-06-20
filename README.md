@@ -12,7 +12,6 @@ make
 ```
 
 ### Build .deb package
-
 ```bash
 cd Tp-Taller-de-Programacion-2-App-Server
 cmake .
@@ -20,7 +19,6 @@ make package
 ```
 
 ### Build docker image
-
 ```bash
 docker build . --tag music-io-app-server
 ```
@@ -30,7 +28,7 @@ docker build . --tag music-io-app-server
 ### Executable:
 
 ```bash
-./Tp_Taller_de_Programacion_2_App_Server
+./music-io-app-server
 ```
 
 ### Docker:
@@ -39,3 +37,17 @@ docker build . --tag music-io-app-server
 docker run music-io-app-server:latest
 ```
 
+## Tests
+
+### Run tests
+To run tests execute:
+```bash
+make test
+```
+
+### Coverage
+To run gcov + lcov execute:
+```bash
+make coverage
+```
+All files generated should be placed under the folder `coverage`. Just open with a browser `/coverage/index.html`
