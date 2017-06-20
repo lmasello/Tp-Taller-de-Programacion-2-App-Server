@@ -1,0 +1,30 @@
+sudo: enabled
+dist: trusty
+
+language: cpp
+
+before_install:
+  - sudo apt-get install -y g++ g++ make cmake git pkg-config lcov pkg-config wget
+  - wget https://github.com/mongodb/mongo-c-driver/releases/download/1.6.1/mongo-c-driver-1.6.1.tar.gz && \
+    tar xzf mongo-c-driver-1.6.1.tar.gz && \
+    cd mongo-c-driver-1.6.1 && \
+    ./configure --disable-automatic-init-and-cleanup && \
+    make && make install
+  - git clone https://github.com/mongodb/mongo-cxx-driver.git \
+        --branch releases/stable --depth 1 && \
+    cd mongo-cxx-driver/build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..  && \
+    make EP_mnmlstc_core && \
+    make && make install
+
+script: 
+  - cmake .
+  - make
+
+after_success:
+  - make test
+
+branches:
+  only:
+  - master
+  - development
