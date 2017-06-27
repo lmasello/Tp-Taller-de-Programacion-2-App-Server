@@ -1,2 +1,13 @@
 .idea/
 cmake-build-debug/
+lib/googletest/
+coverage/
+Testing/
+CMakeFiles/
+
+CMakeCache.txt
+cmake_install.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+CTestTestfile.cmake
+Makefile
